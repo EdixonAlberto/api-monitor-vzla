@@ -1,5 +1,4 @@
 import { Controller, Get } from '@nestjs/common'
-
 import { PricesService } from './services/prices.service'
 
 @Controller('dolar-today')
