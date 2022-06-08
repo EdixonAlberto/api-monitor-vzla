@@ -1,14 +1,12 @@
 import { Controller, Get, Query, Param } from '@nestjs/common'
 
-import { PricesService } from './services/prices.service'
-
 @Controller('monitor-dolar')
 export class MonitorDolarController {
-  constructor(private readonly pricesServices: PricesService) {}
+  constructor() {}
 
   @Get('/prices/current')
   public async getPrices() {
-    return this.pricesServices.getCurrent()
+    return {}
   }
 
   @Get('/prices')
