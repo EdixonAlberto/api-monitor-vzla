@@ -1,11 +1,13 @@
 import { Module } from '@nestjs/common'
 import { ConfigModule, ConfigService } from '@nestjs/config'
 
-import { MonitorDolarModule } from './modules/monitor-dolar/monitor-dolar.module'
-import { DolarTodayModule } from './modules/dolar-today/dolar-today.module'
+import { DatabaseModule } from '@COMMON/database/database.module'
+import { PricesModule } from '@MODULES/prices/prices.module'
+import { UsersModule } from '@MODULES/users/users.module'
 
 @Module({
-  imports: [ConfigModule.forRoot({ isGlobal: true }), MonitorDolarModule, DolarTodayModule]
+  imports: [ConfigModule.forRoot({ isGlobal: true }), DatabaseModule, PricesModule, UsersModule],
+  providers: []
 })
 export class AppModule {
   public static port: number
