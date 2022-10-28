@@ -1,10 +1,10 @@
-type TPrice = {
+type TCurrencie = {
+  symbol: string
   amount: number
-  chg: {
+  trend: {
+    label: string
+    emoji: string
     amount: number
     percentage: string
-    trend: string
   }
-  source: string
-  timestamp: Date
 }
