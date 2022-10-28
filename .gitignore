@@ -32,3 +32,6 @@ lerna-debug.log*
 
 # Environments
 *.env
+
+# Others
+note.txt

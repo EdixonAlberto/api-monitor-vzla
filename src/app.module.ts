@@ -1,6 +1,5 @@
 import { Module } from '@nestjs/common'
 import { ConfigModule, ConfigService } from '@nestjs/config'
-
 import { DatabaseModule } from '@COMMON/database/database.module'
 import { PricesModule } from '@MODULES/prices/prices.module'
 import { UsersModule } from '@MODULES/users/users.module'

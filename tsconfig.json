@@ -21,6 +21,8 @@
     "strictBindCallApply": false,
     "forceConsistentCasingInFileNames": false,
     "noFallthroughCasesInSwitch": false,
-    "typeRoots": ["node_modules/@types", "serc/@types"]
-  }
+    "typeRoots": ["node_modules/@types", "src/@types"]
+  },
+  "include": ["src/**/*.ts"],
+  "exclude": ["node_modules"]
 }
