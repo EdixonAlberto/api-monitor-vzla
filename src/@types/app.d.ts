@@ -8,3 +8,5 @@ type TCurrencie = {
     percentage: string
   }
 }
+
+type TQty = number | 'last' | 'all'

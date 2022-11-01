@@ -1,14 +1,22 @@
 import { Injectable } from '@nestjs/common'
-import { ReturnModelType } from '@typegoose/typegoose'
-import { InjectModel } from 'nestjs-typegoose'
-import { PriceModel } from '@MODULES/prices/price.model'
+import { Price, PriceModel } from '@MODULES/prices/price.model'
+import { PriceDto } from '@MODULES/prices/dto'
 
 @Injectable()
 export class PricesService {
-  constructor(@InjectModel(PriceModel) private readonly priceModel: ReturnModelType<typeof PriceModel>) {}
+  constructor() {}
 
-  public async findPriceBySource() {
-    const prices = await this.priceModel.find()
-    return prices.pop()
+  public async findPriceBySource(qty: TQty, source: string) {
+    let prices: Price[] = []
+    const priceList = await PriceModel(source).find()
+    const isNumber = Number.isNaN(Number(qty)) === false
+
+    if (isNumber) {
+      prices = priceList.filter((_, i) => i < qty)
+    } else {
+      prices = qty === 'last' ? [priceList.pop()] : priceList
+    }
+
+    return prices.map(price => new PriceDto(price))
   }
 }

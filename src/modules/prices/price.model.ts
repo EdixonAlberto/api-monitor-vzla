@@ -1,24 +1,31 @@
-import { modelOptions, prop, Severity } from '@typegoose/typegoose'
-// import { ObjectId } from 'mongoose' //TODO:
+import { getModelForClass, modelOptions, prop, Severity, mongoose } from '@typegoose/typegoose'
 
 @modelOptions({
   options: {
-    customName: 'dolartoday',
     allowMixed: Severity.ALLOW
-  },
-  schemaOptions: {
-    versionKey: false
   }
 })
-export class PriceModel {
-  _id: string
+export class Price {
+  readonly _id: mongoose.ObjectId
 
   @prop({ required: true })
-  currencies: TCurrencie[]
+  readonly currencies: TCurrencie[]
 
   @prop({ required: true })
-  timestamp: Date
+  readonly timestamp: Date
 
   @prop({ required: true })
-  createdAt: Date
+  readonly createdAt: Date
+}
+
+export const PriceModel = (modelName: string) => {
+  return getModelForClass(Price, {
+    options: {
+      customName: modelName,
+      allowMixed: Severity.ALLOW
+    },
+    schemaOptions: {
+      versionKey: false
+    }
+  })
 }
