@@ -10,7 +10,7 @@ async function bootstrap() {
   await db.connectDB()
   await app.listen(AppModule.port)
 
-  new Logger('NestApplication').log(`Server listening in port ${AppModule.port}`)
+  new Logger('API').log(`Server listening in port ${AppModule.port}`)
 }
 
 bootstrap()

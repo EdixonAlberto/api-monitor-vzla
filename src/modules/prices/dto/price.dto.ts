@@ -1,5 +1,5 @@
 import { mongoose } from '@typegoose/typegoose'
-import { Price } from '@MODULES/prices/price.model'
+import { Price } from '@MODULES/prices/entities/price.model'
 
 export class PriceDto {
   readonly id: mongoose.ObjectId

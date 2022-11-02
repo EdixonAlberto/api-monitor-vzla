@@ -1,4 +1,4 @@
-import { mongoose } from '@typegoose/typegoose'
+import { mongoose, types, Severity } from '@typegoose/typegoose'
 import { ConfigService } from '@nestjs/config'
 import { Logger } from '@nestjs/common'
 
@@ -13,6 +13,22 @@ export class DatabaseService {
     } catch (error) {
       new Logger('DB').error((error as Error).message)
       throw null
+    }
+  }
+
+  public static defaultOptionsModel(customName: string): types.IModelOptions {
+    return {
+      options: {
+        customName,
+        allowMixed: Severity.ALLOW
+      },
+      schemaOptions: {
+        versionKey: false,
+        timestamps: {
+          createdAt: false,
+          updatedAt: false
+        }
+      }
     }
   }
 }

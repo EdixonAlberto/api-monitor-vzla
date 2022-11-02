@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common'
-import { Price, PriceModel } from '@MODULES/prices/price.model'
+import { Price, PriceModel } from '@MODULES/prices/entities/price.model'
 import { PriceDto } from '@MODULES/prices/dto'
 
 @Injectable()

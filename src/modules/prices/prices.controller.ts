@@ -1,5 +1,5 @@
 import { Controller, Get, Param } from '@nestjs/common'
-import { PricesService } from './prices.service'
+import { PricesService } from './services/prices.service'
 import { PriceDto, QueryPriceDto } from './dto'
 import { ResponseDto } from '@COMMON/dto/response.dto'
 
