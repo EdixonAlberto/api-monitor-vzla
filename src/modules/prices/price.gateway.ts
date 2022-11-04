@@ -9,21 +9,14 @@ import {
 } from '@nestjs/websockets'
 import { Socket } from 'socket.io'
 import { Logger } from '@nestjs/common'
-import { PricesService } from './services/prices.service'
-import { MonitorService } from './services/monitor.service'
+import { PricesService } from '@MODULES/prices/services/prices.service'
+import { MonitorService } from '@MODULES/prices/services/monitor.service'
 import { QueryPriceDto } from '@MODULES/prices/dto'
 import { ConfigService } from '@nestjs/config'
 
-// TODO: usar variables de entorno para configurar el gateway de websocket
-@WebSocketGateway(3002, {
+@WebSocketGateway({
   // TODO: estudiar la posibilidad de usar namespaces y rooms
-  // namespace: 'prices',
-
-  // TODO: estudiar sobre transports
-  // transports: ['websocket'],
-  cors: {
-    origin: '*'
-  }
+  // namespace: 'prices'
 })
 export class PriceGateway implements OnGatewayInit, OnGatewayConnection, OnGatewayDisconnect {
   @WebSocketServer()
@@ -43,7 +36,7 @@ export class PriceGateway implements OnGatewayInit, OnGatewayConnection, OnGatew
   }
 
   async afterInit(server: Socket) {
-    this.logger(`WebSocket listening in port ${process.env.PORT_WS}`)
+    this.logger(`Websocket listening in port ${this.config.get<string>('PORT_WS')}`)
   }
 
   handleConnection(client: Socket) {
