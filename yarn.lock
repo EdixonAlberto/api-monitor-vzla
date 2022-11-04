@@ -3621,11 +3621,6 @@ is-binary-path@~2.1.0:
   dependencies:
     binary-extensions "^2.0.0"
 
-is-class@^0.0.9:
-  version "0.0.9"
-  resolved "https://registry.yarnpkg.com/is-class/-/is-class-0.0.9.tgz#3024c17b1cf8f6bdc1f3eca1bae507ea992b6d93"
-  integrity sha512-kUfRnejcRC9YLgblxoJ76dp9gZ3vMKTrDS5I6z2UVMOsHHSImNKCJocjQTkZr38PwiSZ9LVklaHEENaVYeFTXg==
-
 is-core-module@^2.8.1:
   version "2.9.0"
   resolved "https://registry.npmjs.org/is-core-module/-/is-core-module-2.9.0.tgz"
@@ -4565,14 +4560,6 @@ neo-async@^2.6.2:
   version "2.6.2"
   resolved "https://registry.npmjs.org/neo-async/-/neo-async-2.6.2.tgz"
   integrity sha512-Yd3UES5mWCSqR+qNT93S3UoYUkqAZ9lLg8a7g9rimsWmYGK8cVToA4/sF3RrshdyV3sAGMXVUmpMYOw+dLpOuw==
-
-nestjs-typegoose@^7.1.38:
-  version "7.1.38"
-  resolved "https://registry.yarnpkg.com/nestjs-typegoose/-/nestjs-typegoose-7.1.38.tgz#c85cceef0dc4c3145348eeb8c4aa7549b90c88ac"
-  integrity sha512-hYgDliG2IS5CJkzRsTbbfwZk+IP0jEyCaxcRqqXvxZaP5miiH9UvGm3K0hg8X5DuVkmsgTzW3+MxOXmcLm9BOA==
-  dependencies:
-    is-class "^0.0.9"
-    reflect-metadata "^0.1.13"
 
 node-emoji@1.11.0:
   version "1.11.0"

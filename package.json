@@ -32,7 +32,6 @@
     "@nestjs/websockets": "^9.1.6",
     "@typegoose/typegoose": "^9.12.1",
     "mongoose": "^6.7.0",
-    "nestjs-typegoose": "^7.1.38",
     "reflect-metadata": "^0.1.13",
     "rimraf": "^3.0.2",
     "rxjs": "^7.2.0",
