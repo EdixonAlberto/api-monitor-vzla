@@ -8,9 +8,9 @@ async function bootstrap() {
   const app = await NestFactory.create(AppModule)
 
   await db.connectDB()
-  await app.listen(AppModule.port)
+  await app.listen(AppModule.portHTTP)
 
-  new Logger('API').log(`Server listening in port ${AppModule.port}`)
+  new Logger('API').log(`Server listening in port ${AppModule.portHTTP}`)
 }
 
 bootstrap()

@@ -1,3 +1,7 @@
+type TEnv = 'development' | 'production'
+
+type TQty = number | 'last' | 'all'
+
 type TCurrencie = {
   symbol: string
   amount: number
@@ -8,5 +12,3 @@ type TCurrencie = {
     percentage: string
   }
 }
-
-type TQty = number | 'last' | 'all'

@@ -8,9 +8,9 @@ import { UsersModule } from '@MODULES/users/users.module'
   providers: []
 })
 export class AppModule {
-  public static port: number
+  public static portHTTP: number
 
   constructor(private readonly config: ConfigService) {
-    AppModule.port = Number(this.config.get<string>('PORT'))
+    AppModule.portHTTP = Number(this.config.get<string>('PORT_HTTP'))
   }
 }

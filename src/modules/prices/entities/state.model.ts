@@ -1,4 +1,4 @@
-import { getModelForClass, modelOptions, prop, Severity } from '@typegoose/typegoose'
+import { getModelForClass, modelOptions, prop, Severity, mongoose } from '@typegoose/typegoose'
 import { DatabaseService } from '@COMMON/services/database.service'
 
 @modelOptions({
@@ -7,6 +7,8 @@ import { DatabaseService } from '@COMMON/services/database.service'
   }
 })
 export class State {
+  readonly _id?: mongoose.ObjectId
+
   @prop({ required: true })
   readonly scope: 'API' | 'SERVICE'
 

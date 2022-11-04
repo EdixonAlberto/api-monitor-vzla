@@ -11,6 +11,7 @@
     "outDir": "./dist",
     "baseUrl": "./src",
     "paths": {
+      "@SRC/*": ["./*"],
       "@COMMON/*": ["common/*"],
       "@MODULES/*": ["modules/*"]
     },
