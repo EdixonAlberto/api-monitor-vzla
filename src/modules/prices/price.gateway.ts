@@ -22,7 +22,8 @@ export class PriceGateway implements OnGatewayInit, OnGatewayConnection, OnGatew
   @WebSocketServer()
   private server: Socket
   private logger: (message: string) => void
-  private channels: { channel: string; query: QueryPriceDto }[] = []
+  private channels: { event: string; query: QueryPriceDto }[] = []
+  private clients: Map<string, {}> = new Map()
 
   constructor(
     private readonly pricesService: PricesService,
@@ -35,42 +36,45 @@ export class PriceGateway implements OnGatewayInit, OnGatewayConnection, OnGatew
     }
   }
 
-  async afterInit(server: Socket) {
+  async afterInit() {
     this.logger(`Websocket listening in port ${this.config.get<string>('PORT_WS')}`)
   }
 
   handleConnection(client: Socket) {
+    this.clients.set(client.id, null)
     this.logger(`Client "${client.id}" connected`)
   }
 
   handleDisconnect(client: Socket) {
+    this.clients.delete(client.id)
     this.logger(`Client "${client.id}" disconnected`)
+    if (!this.clients.size) this.monitorService.off()
   }
 
   @SubscribeMessage('prices')
   private prices(@MessageBody() query: QueryPriceDto): void {
-    if (!this.channels.length) this.emitPrices()
+    if (this.clients.size === 1) this.emitPrices()
 
     this.channels.push({
-      channel: `prices:${query.qty}:sources:${query.source}`,
+      event: `prices:${query.qty}:sources:${query.source}`,
       query
     })
   }
 
   private emitPrices(): void {
     this.monitorService.run(async () => {
-      const pricePromises = this.channels.map(({ channel, query }) => {
+      const pricePromises = this.channels.map(({ event, query }) => {
         return new Promise(async resolve => {
           try {
             const { qty, source } = query
             const data = await this.pricesService.findPriceBySource(qty, source)
-            this.server.emit(channel, {
+            this.server.emit(event, {
               response: `Prices of ${source}`,
               data
             })
           } catch (error) {
             new Logger('WEB_SOCKET').error(error)
-            this.server.emit(channel, {
+            this.server.emit(event, {
               response: 'Error',
               data: null,
               error

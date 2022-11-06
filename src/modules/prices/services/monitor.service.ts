@@ -4,9 +4,9 @@ import { StateModel, State } from '@MODULES/prices/entities/state.model'
 
 @Injectable()
 export class MonitorService {
-  private TIME_INTERVAL: number
-  private interval: NodeJS.Timer
+  private readonly TIME_INTERVAL: number
   private readonly UPDATE_HOURS: string[] = ['09:32', '13:32']
+  private interval: NodeJS.Timer
   private logger: Logger
 
   constructor() {
@@ -15,12 +15,17 @@ export class MonitorService {
     this.logger = new Logger('MONITOR')
   }
 
+  public off(): void {
+    clearInterval(this.interval)
+    this.logger.log(`Monitor off`)
+  }
+
   public async run(callback: () => Promise<void>): Promise<void> {
     try {
       await this.loadUpdateHours()
 
       await new Promise((resolve, reject) => {
-        this.logger.log(`Monitor started`)
+        this.logger.log(`Monitor running`)
 
         this.interval = setInterval(async () => {
           const currentTime = this.getVzlaTime()
@@ -55,14 +60,14 @@ export class MonitorService {
 
             resolve(true)
           } catch (error) {
-            this.logger.error((error as Error).message)
             reject(error)
           }
         }, this.TIME_INTERVAL)
       })
     } catch (error) {
+      this.logger.error((error as Error).message)
       clearInterval(this.interval)
-      throw error
+      process.exit(0)
     }
   }
 

@@ -3,7 +3,7 @@ import { ConfigService } from '@nestjs/config'
 import { Logger } from '@nestjs/common'
 
 export class DatabaseService {
-  constructor(private readonly config = new ConfigService()) {}
+  constructor(private readonly config: ConfigService) {}
 
   public async connectDB(): Promise<void> {
     try {
@@ -12,7 +12,7 @@ export class DatabaseService {
       new Logger('DB').log(`Database connected: ${db.connection.name}`)
     } catch (error) {
       new Logger('DB').error((error as Error).message)
-      throw null
+      process.exit(0)
     }
   }
 

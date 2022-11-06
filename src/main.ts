@@ -6,11 +6,12 @@ import { DatabaseService } from '@COMMON/services/database.service'
 import { SocketIoAdapter } from '@COMMON/websocket/socket-io-adapter'
 
 async function bootstrap() {
-  const db = new DatabaseService()
   const app = await NestFactory.create(AppModule)
   const configService = app.get(ConfigService)
+  const db = new DatabaseService(configService)
   const origin = configService.get<string>('WHITE_LIST').split(',')
 
+  // TODO: Establecer cors en api
   // app.enableCors({
   //   origin,
   //   credentials: true
