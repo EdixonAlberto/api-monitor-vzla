@@ -1,4 +1,5 @@
 import { getModelForClass, modelOptions, prop, Severity, mongoose } from '@typegoose/typegoose'
+import { Source } from './source.model'
 
 @modelOptions({
   options: {
@@ -6,16 +7,18 @@ import { getModelForClass, modelOptions, prop, Severity, mongoose } from '@typeg
   }
 })
 export class Price {
-  readonly _id: mongoose.ObjectId
+  readonly _id?: mongoose.Types.ObjectId
+
+  @prop({ required: true, ref: Source, type: mongoose.Types.ObjectId })
+  readonly sourceId: mongoose.Types.ObjectId & Source
 
   @prop({ required: true })
-  readonly currencies: TCurrencie[]
+  readonly currencies: TCurrency[]
 
   @prop({ required: true })
   readonly timestamp: Date
 
-  @prop({ required: true })
-  readonly createdAt: Date
+  readonly createdAt?: Date
 }
 
 export const PriceModel = (modelName: string) => {

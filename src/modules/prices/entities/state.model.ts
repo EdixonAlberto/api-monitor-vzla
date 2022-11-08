@@ -7,7 +7,7 @@ import { DatabaseService } from '@COMMON/services/database.service'
   }
 })
 export class State {
-  readonly _id?: mongoose.ObjectId
+  readonly _id?: mongoose.Types.ObjectId
 
   @prop({ required: true })
   readonly scope: 'API' | 'SERVICE'

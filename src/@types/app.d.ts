@@ -2,7 +2,7 @@ type TEnv = 'development' | 'production'
 
 type TQty = number | 'last' | 'all'
 
-type TCurrencie = {
+type TCurrency = {
   symbol: string
   amount: number
   trend: {
