@@ -7,7 +7,7 @@ import { ResponseDto } from '@COMMON/dto/response.dto'
 export class PricesController {
   constructor(private readonly pricesService: PricesService) {}
 
-  @Get(':qty/source/:source')
+  @Get(':qty/sources/:source')
   async findPriceBySource(@Param() { qty, source }: QueryPriceDto): Promise<ResponseDto<PriceDto[]>> {
     const data = await this.pricesService.findPriceBySource(qty, source)
 

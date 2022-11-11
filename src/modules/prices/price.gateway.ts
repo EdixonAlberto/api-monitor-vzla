@@ -11,7 +11,6 @@ import { Socket } from 'socket.io'
 import { Logger } from '@nestjs/common'
 import { PricesService } from '@MODULES/prices/services/prices.service'
 import { MonitorService } from '@MODULES/prices/services/monitor.service'
-import { QueryPriceDto } from '@MODULES/prices/dto'
 import { ConfigService } from '@nestjs/config'
 
 @WebSocketGateway({
@@ -22,8 +21,7 @@ export class PriceGateway implements OnGatewayInit, OnGatewayConnection, OnGatew
   @WebSocketServer()
   private server: Socket
   private logger: (message: string) => void
-  private channels: { event: string; query: QueryPriceDto }[] = []
-  private clients: Map<string, {}> = new Map()
+  private clients: TClient = new Map()
 
   constructor(
     private readonly pricesService: PricesService,
@@ -40,30 +38,30 @@ export class PriceGateway implements OnGatewayInit, OnGatewayConnection, OnGatew
     this.logger(`Websocket listening in port ${this.config.get<string>('PORT_WS')}`)
   }
 
-  handleConnection(client: Socket) {
-    this.clients.set(client.id, null)
-    this.logger(`Client "${client.id}" connected`)
+  handleConnection({ id }: Socket) {
+    this.clients.set(id, { id, channels: [] })
+    this.logger(`Client connected "${id}"`)
   }
 
-  handleDisconnect(client: Socket) {
-    this.clients.delete(client.id)
-    this.logger(`Client "${client.id}" disconnected`)
+  handleDisconnect({ id }: Socket) {
+    this.clients.delete(id)
+    this.logger(`Client disconnected: "${id}"`)
     if (!this.clients.size) this.monitorService.off()
   }
 
   @SubscribeMessage('prices')
-  private prices(@MessageBody() query: QueryPriceDto): void {
+  private prices(@MessageBody() { clientId, query }: TPayload): void {
     if (this.clients.size === 1) this.emitPrices()
+    const event = `prices:${query.qty}:sources:${query.source}`
 
-    this.channels.push({
-      event: `prices:${query.qty}:sources:${query.source}`,
-      query
+    this.clients.forEach(client => {
+      if (client.id === clientId) client.channels.push({ query, event })
     })
   }
 
   private emitPrices(): void {
     this.monitorService.run(async () => {
-      const pricePromises = this.channels.map(({ event, query }) => {
+      const pricePromises = this.getTotalChannels().map(({ query, event }) => {
         return new Promise(async resolve => {
           try {
             const { qty, source } = query
@@ -87,5 +85,19 @@ export class PriceGateway implements OnGatewayInit, OnGatewayConnection, OnGatew
 
       await Promise.allSettled(pricePromises)
     })
+  }
+
+  private getTotalChannels(): TChannel[] {
+    let totalChannels: TChannel[] = []
+
+    this.clients.forEach(({ channels }) => {
+      for (const channel of channels) {
+        const events = totalChannels.map(({ event }) => event)
+        const isEvent = events.includes(channel.event)
+        if (!isEvent) totalChannels.push(channel)
+      }
+    })
+
+    return totalChannels
   }
 }

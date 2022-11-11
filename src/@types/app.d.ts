@@ -12,3 +12,18 @@ type TCurrency = {
     percentage: string
   }
 }
+
+type TPayload = { clientId: string; query: import('@MODULES/prices/dto').QueryPriceDto }
+
+type TClient = Map<
+  string,
+  {
+    id: string
+    channels: TChannel[]
+  }
+>
+
+type TChannel = {
+  query: import('@MODULES/prices/dto').QueryPriceDto
+  event: string
+}
