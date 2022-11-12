@@ -1,4 +1,4 @@
 export class QueryPriceDto {
   readonly qty: TQty
-  readonly source: string
+  readonly source?: string
 }

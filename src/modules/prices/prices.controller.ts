@@ -7,9 +7,19 @@ import { ResponseDto } from '@COMMON/dto/response.dto'
 export class PricesController {
   constructor(private readonly pricesService: PricesService) {}
 
+  @Get(':qty')
+  async findPrices(@Param() { qty }: QueryPriceDto): Promise<ResponseDto<PriceDto[]>> {
+    const data = await this.pricesService.findPrices(qty)
+
+    return {
+      response: 'All price sources',
+      data
+    }
+  }
+
   @Get(':qty/sources/:source')
-  async findPriceBySource(@Param() { qty, source }: QueryPriceDto): Promise<ResponseDto<PriceDto[]>> {
-    const data = await this.pricesService.findPriceBySource(qty, source)
+  async findPricesBySource(@Param() { qty, source }: QueryPriceDto): Promise<ResponseDto<PriceDto[]>> {
+    const data = await this.pricesService.findPricesBySource(qty, source)
 
     return {
       response: `Prices of ${source}`,

@@ -9,7 +9,8 @@ async function bootstrap() {
   const app = await NestFactory.create(AppModule)
   const configService = app.get(ConfigService)
   const db = new DatabaseService(configService)
-  const origin = configService.get<string>('WHITE_LIST').split(',')
+  const whiteList = configService.get<string>('WHITE_LIST')
+  const origin = whiteList ? whiteList.split(',') : []
 
   // TODO: Establecer cors en api
   // app.enableCors({

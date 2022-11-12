@@ -16,8 +16,10 @@ export class MonitorService {
   }
 
   public off(): void {
-    clearInterval(this.interval)
-    this.logger.log(`Monitor off`)
+    if (this.interval['_idleTimeout'] > -1) {
+      clearInterval(this.interval)
+      this.logger.log(`Monitor off`)
+    }
   }
 
   public async run(callback: () => Promise<void>): Promise<void> {

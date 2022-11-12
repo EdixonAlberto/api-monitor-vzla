@@ -65,20 +65,23 @@ export class PriceGateway implements OnGatewayInit, OnGatewayConnection, OnGatew
         return new Promise(async resolve => {
           try {
             const { qty, source } = query
-            const data = await this.pricesService.findPriceBySource(qty, source)
+            const data = source
+              ? await this.pricesService.findPricesBySource(qty, source)
+              : await this.pricesService.findPrices(qty)
+
             this.server.emit(event, {
               response: `Prices of ${source}`,
               data
             })
           } catch (error) {
             new Logger('WEB_SOCKET').error(error)
+
             this.server.emit(event, {
               response: 'Error',
               data: null,
               error
             })
           }
-
           resolve(null)
         })
       })
