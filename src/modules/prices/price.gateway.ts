@@ -3,7 +3,6 @@ import {
   SubscribeMessage,
   MessageBody,
   WebSocketServer,
-  OnGatewayInit,
   OnGatewayConnection,
   OnGatewayDisconnect
 } from '@nestjs/websockets'
@@ -13,11 +12,8 @@ import { PricesService } from '@MODULES/prices/services/prices.service'
 import { MonitorService } from '@MODULES/prices/services/monitor.service'
 import { ConfigService } from '@nestjs/config'
 
-@WebSocketGateway({
-  // TODO: estudiar la posibilidad de usar namespaces y rooms
-  // namespace: 'prices'
-})
-export class PriceGateway implements OnGatewayInit, OnGatewayConnection, OnGatewayDisconnect {
+@WebSocketGateway()
+export class PriceGateway implements OnGatewayConnection, OnGatewayDisconnect {
   @WebSocketServer()
   private server: Socket
   private logger: (message: string) => void
@@ -32,10 +28,6 @@ export class PriceGateway implements OnGatewayInit, OnGatewayConnection, OnGatew
       const env = this.config.get<TEnv>('NODE_ENV')
       if (env === 'development') new Logger('WEB_SOCKET').log(message)
     }
-  }
-
-  async afterInit() {
-    this.logger(`Websocket listening in port ${this.config.get<string>('PORT_WS')}`)
   }
 
   handleConnection({ id }: Socket) {

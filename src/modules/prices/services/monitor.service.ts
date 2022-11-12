@@ -11,12 +11,12 @@ export class MonitorService {
 
   constructor() {
     this.TIME_INTERVAL = 1000 * 60 * 1
-    this.interval = setInterval(() => null)
     this.logger = new Logger('MONITOR')
   }
 
   public off(): void {
-    if (this.interval['_idleTimeout'] > -1) {
+    const isInterval = this.interval && this.interval['_idleTimeout'] > -1
+    if (isInterval) {
       clearInterval(this.interval)
       this.logger.log(`Monitor off`)
     }

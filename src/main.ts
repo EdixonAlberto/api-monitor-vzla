@@ -9,10 +9,12 @@ async function bootstrap() {
   const app = await NestFactory.create(AppModule)
   const configService = app.get(ConfigService)
   const db = new DatabaseService(configService)
-  const whiteList = configService.get<string>('WHITE_LIST')
-  const origin = whiteList ? whiteList.split(',') : []
 
-  // TODO: Establecer cors en api
+  const portHTTP = Number(configService.get<string>('PORT'))
+  const whiteList = configService.get<string>('WHITE_LIST')
+  const origin = whiteList ? whiteList.split(',') : '*'
+
+  // TODO: Establecer cors en api y websocket
   // app.enableCors({
   //   origin,
   //   credentials: true
@@ -20,9 +22,9 @@ async function bootstrap() {
   app.useWebSocketAdapter(new SocketIoAdapter(app, configService, { cors: { origin } }))
 
   await db.connectDB()
-  await app.listen(AppModule.portHTTP)
+  await app.listen(portHTTP)
 
-  new Logger('API').log(`Server listening in port ${AppModule.portHTTP}`)
+  new Logger('API').log(`Server listening in port ${portHTTP}`)
 }
 
 bootstrap()

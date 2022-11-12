@@ -15,17 +15,15 @@ export class SocketIoAdapter extends IoAdapter {
   }
 
   createIOServer(port: number, options: ServerOptions) {
-    const portWS = Number(this.config.get<string>('PORT_WS'))
+    const portWS = Number(this.config.get<string>('PORT_WS')) || port
+    const portHTTP = this.config.get<string>('PORT')
     const optionsWS: ServerOptions = {
       ...options,
-      ...this.optionsGlobal
-      // path
-      // TODO: estudiar sobre transports
-      // transports
+      ...this.optionsGlobal,
+      path: '/socket.io'
     }
 
-    this.logger.log('Websocket gateway initialized')
-
+    this.logger.log(`Websocket listening in port ${portWS || portHTTP}`)
     return super.createIOServer(portWS, optionsWS)
   }
 }
