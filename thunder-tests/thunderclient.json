@@ -1,0 +1,30 @@
+[
+  {
+    "_id": "d46d62d7-7dd8-4553-b274-fc4c97a9fced",
+    "colId": "6694f809-b015-44f1-ad39-04c334165103",
+    "containerId": "",
+    "name": "get prices by sources",
+    "url": "{{HOST}}/api/prices/last/sources/dolartoday",
+    "method": "GET",
+    "sortNum": 10000,
+    "created": "2022-11-15T17:31:38.793Z",
+    "modified": "2022-11-15T17:33:02.802Z",
+    "headers": [],
+    "params": [],
+    "tests": []
+  },
+  {
+    "_id": "780492dd-6c2c-4f5d-b34d-f4e034ab8723",
+    "colId": "6694f809-b015-44f1-ad39-04c334165103",
+    "containerId": "",
+    "name": "get prices all",
+    "url": "{{HOST}}/api/prices/last",
+    "method": "GET",
+    "sortNum": 20000,
+    "created": "2022-11-15T17:33:39.512Z",
+    "modified": "2022-11-15T17:33:59.681Z",
+    "headers": [],
+    "params": [],
+    "tests": []
+  }
+]

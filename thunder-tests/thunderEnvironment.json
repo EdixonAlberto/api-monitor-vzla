@@ -1,0 +1,16 @@
+[
+  {
+    "_id": "359e3348-0e5b-4008-b07a-415e17aaa694",
+    "name": "DEV",
+    "default": true,
+    "sortNum": 10000,
+    "created": "2022-11-15T17:32:12.238Z",
+    "modified": "2022-11-15T17:32:25.514Z",
+    "data": [
+      {
+        "name": "HOST",
+        "value": "http://localhost:3001"
+      }
+    ]
+  }
+]
