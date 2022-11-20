@@ -43,11 +43,14 @@ export class PriceGateway implements OnGatewayConnection, OnGatewayDisconnect {
 
   @SubscribeMessage('prices')
   private prices(@MessageBody() { clientId, query }: TPayload): void {
-    if (this.clients.size === 1) this.emitPrices()
+    if (!this.monitorService.isRun()) this.emitPrices()
     const event = `prices:${query.qty}:sources:${query.source}`
 
     this.clients.forEach(client => {
-      if (client.id === clientId) client.channels.push({ query, event })
+      if (client.id === clientId) {
+        client.channels.push({ query, event })
+        this.logger(`Event added: "${event}" to client "${client.id}"`)
+      }
     })
   }
 

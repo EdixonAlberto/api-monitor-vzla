@@ -14,9 +14,13 @@ export class MonitorService {
     this.logger = new Logger('MONITOR')
   }
 
-  public off(): void {
+  public isRun(): boolean {
     const isInterval = this.interval && this.interval['_idleTimeout'] > -1
-    if (isInterval) {
+    return isInterval
+  }
+
+  public off(): void {
+    if (this.isRun()) {
       clearInterval(this.interval)
       this.logger.log(`Monitor off`)
     }
