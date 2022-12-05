@@ -1,16 +1,16 @@
 import { Injectable } from '@nestjs/common'
 import { Logger } from '@nestjs/common'
+
 import { StateModel, State } from '@MODULES/prices/entities/state.model'
 
 @Injectable()
 export class MonitorService {
-  private readonly TIME_INTERVAL: number
+  private readonly TIME_INTERVAL: number = 1000 * 60 * 1
   private readonly UPDATE_HOURS: string[] = ['09:32', '13:32']
   private interval: NodeJS.Timer
   private logger: Logger
 
   constructor() {
-    this.TIME_INTERVAL = 1000 * 60 * 1
     this.logger = new Logger('MONITOR')
   }
 
@@ -56,6 +56,7 @@ export class MonitorService {
                     await StateModel.findByIdAndUpdate(_id, { updateHours })
 
                     await callback()
+                    this.logger.log(`Monitor updated: ${new Date(updateTime).toISOString()}`)
                     break
                   }
                 }

@@ -6,25 +6,29 @@ import {
   OnGatewayConnection,
   OnGatewayDisconnect
 } from '@nestjs/websockets'
-import { Socket } from 'socket.io'
 import { Logger } from '@nestjs/common'
+import { ConfigService } from '@nestjs/config'
+import { HttpService } from '@nestjs/axios'
+import { catchError, firstValueFrom } from 'rxjs'
+import { Socket } from 'socket.io'
+
 import { PricesService } from '@MODULES/prices/services/prices.service'
 import { MonitorService } from '@MODULES/prices/services/monitor.service'
-import { ConfigService } from '@nestjs/config'
 
 @WebSocketGateway()
 export class PriceGateway implements OnGatewayConnection, OnGatewayDisconnect {
   @WebSocketServer()
   private server: Socket
-  private logger: (message: string) => void
+  private logger: (message: string | object) => void
   private clients: TClient = new Map()
 
   constructor(
     private readonly pricesService: PricesService,
     private readonly monitorService: MonitorService,
-    private readonly config: ConfigService
+    private readonly config: ConfigService,
+    private readonly http: HttpService
   ) {
-    this.logger = (message: string) => {
+    this.logger = message => {
       const env = this.config.get<TEnv>('NODE_ENV')
       if (env === 'development') new Logger('WEB_SOCKET').log(message)
     }
@@ -56,32 +60,46 @@ export class PriceGateway implements OnGatewayConnection, OnGatewayDisconnect {
 
   private emitPrices(): void {
     this.monitorService.run(async () => {
-      const pricePromises = this.getTotalChannels().map(({ query, event }) => {
-        return new Promise(async resolve => {
-          try {
-            const { qty, source } = query
-            const data = source
-              ? await this.pricesService.findPricesBySource(qty, source)
-              : await this.pricesService.findPrices(qty)
-
-            this.server.emit(event, {
-              response: `Prices of ${source}`,
-              data
+      try {
+        const { data } = await firstValueFrom(
+          this.http.get<TServiceResponse>('/api/update_data').pipe(
+            catchError(error => {
+              const errorMessage = error?.response?.data.error || error.message
+              throw new Error(`Error request: ${errorMessage}`)
             })
-          } catch (error) {
-            new Logger('WEB_SOCKET').error(error)
+          )
+        )
 
-            this.server.emit(event, {
-              response: 'Error',
-              data: null,
-              error
-            })
-          }
-          resolve(null)
-        })
-      })
+        // TODO: Por ahora mostrar esto aqui, luego se debe guardar todo logger en DB
+        console.log(data.response)
 
-      await Promise.allSettled(pricePromises)
+        await Promise.allSettled(
+          this.getTotalChannels().map(async ({ query, event }) => {
+            try {
+              const { qty, source } = query
+              const data = source
+                ? await this.pricesService.findPricesBySource(qty, source)
+                : await this.pricesService.findPrices(qty)
+
+              this.server.emit(event, {
+                response: `Prices of ${source}`,
+                data
+              })
+            } catch (error) {
+              new Logger('WEB_SOCKET').error(error)
+
+              this.server.emit(event, {
+                response: 'Error',
+                data: null,
+                error
+              })
+            }
+          })
+        )
+      } catch (error) {
+        new Logger(PriceGateway.name).error((error as Error)?.message)
+        return
+      }
     })
   }
 

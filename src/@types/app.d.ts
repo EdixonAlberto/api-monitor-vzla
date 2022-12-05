@@ -27,3 +27,11 @@ type TChannel = {
   query: import('@MODULES/prices/dto').QueryPriceDto
   event: string
 }
+
+type TServiceResponse = {
+  response: {
+    name: string
+    updated: boolean
+  } | null
+  error: string | null
+}

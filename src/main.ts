@@ -1,6 +1,7 @@
 import { Logger } from '@nestjs/common'
 import { NestFactory } from '@nestjs/core'
 import { ConfigService } from '@nestjs/config'
+
 import { AppModule } from './app.module'
 import { DatabaseService } from '@COMMON/services/database.service'
 import { SocketIoAdapter } from '@COMMON/websocket/socket-io-adapter'
@@ -11,14 +12,10 @@ async function bootstrap() {
   const db = new DatabaseService(configService)
 
   const portHTTP = Number(configService.get<string>('PORT'))
-  const whiteList = configService.get<string>('WHITE_LIST')
-  const origin = whiteList ? whiteList.split(',') : '*'
+  const origin = configService.get<string>('WHITE_LIST') || '*'
 
-  // TODO: Establecer cors en api y websocket
-  // app.enableCors({
-  //   origin,
-  //   credentials: true
-  // })
+  // TODO: Establecer custom cors and access_token en http y websocket
+  app.enableCors({ origin })
   app.useWebSocketAdapter(new SocketIoAdapter(app, configService, { cors: { origin } }))
 
   await db.connectDB()

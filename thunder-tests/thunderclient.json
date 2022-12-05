@@ -8,8 +8,13 @@
     "method": "GET",
     "sortNum": 10000,
     "created": "2022-11-15T17:31:38.793Z",
-    "modified": "2022-11-15T17:33:02.802Z",
-    "headers": [],
+    "modified": "2022-11-15T17:40:34.705Z",
+    "headers": [
+      {
+        "name": "Origin",
+        "value": "http://localhost:3000"
+      }
+    ],
     "params": [],
     "tests": []
   },
