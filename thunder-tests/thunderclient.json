@@ -4,11 +4,11 @@
     "colId": "6694f809-b015-44f1-ad39-04c334165103",
     "containerId": "",
     "name": "get prices by sources",
-    "url": "{{HOST}}/api/prices/last/sources/dolartoday",
+    "url": "{{HOST}}/api/prices/last/sources/enparalelo",
     "method": "GET",
     "sortNum": 10000,
     "created": "2022-11-15T17:31:38.793Z",
-    "modified": "2022-11-15T17:40:34.705Z",
+    "modified": "2022-12-07T04:26:15.210Z",
     "headers": [
       {
         "name": "Origin",
@@ -31,5 +31,17 @@
     "headers": [],
     "params": [],
     "tests": []
+  },
+  {
+    "_id": "5893482c-0c89-463e-9046-cc2b88659084",
+    "colId": "6694f809-b015-44f1-ad39-04c334165103",
+    "containerId": "",
+    "name": "update data",
+    "url": "",
+    "method": "GET",
+    "sortNum": 30000,
+    "created": "2022-12-05T14:37:01.933Z",
+    "modified": "2022-12-05T14:37:01.942Z",
+    "headers": []
   }
 ]

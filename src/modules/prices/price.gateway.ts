@@ -82,7 +82,7 @@ export class PriceGateway implements OnGatewayConnection, OnGatewayDisconnect {
                 : await this.pricesService.findPrices(qty)
 
               this.server.emit(event, {
-                response: `Prices of ${source}`,
+                response: `Prices of ${source || 'all'}`,
                 data
               })
             } catch (error) {

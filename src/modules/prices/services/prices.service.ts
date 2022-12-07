@@ -9,8 +9,10 @@ export class PricesService {
 
   public async findPricesBySource(qty: TQty, source: string) {
     let prices: Price[] = []
-    const priceList = await PriceModel(source).find().populate('sourceId', { key: 0, urlList: 0 })
     const isNumber = Number.isNaN(Number(qty)) === false
+
+    const priceList = await PriceModel(source).find().populate('sourceId', { key: 0, urlList: 0 })
+    if (!priceList.length) return []
 
     if (isNumber) {
       prices = priceList.reverse().filter((_, i) => i < qty)
@@ -36,11 +38,12 @@ export class PricesService {
     const resultPriceList = await Promise.allSettled(queryPromiseList)
 
     for (const resultPrice of resultPriceList) {
-      if (resultPrice.status === 'fulfilled') {
+      if (resultPrice.status === 'fulfilled' && resultPrice.value.length) {
         const prices = qty === 'last' ? [resultPrice.value.pop()] : resultPrice.value.filter((_, i) => i < qty)
         pricesList.push(prices)
       }
     }
+    if (!pricesList.length) return []
 
     const prices = pricesList.flat()
     return prices.map(price => new PriceDto(price))
