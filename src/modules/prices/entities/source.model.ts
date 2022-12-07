@@ -20,6 +20,9 @@ export class Source {
   readonly logo: string
 
   @prop({ required: true })
+  readonly banner: string
+
+  @prop({ required: true })
   readonly urlPublic: string
 
   @prop({ required: true })

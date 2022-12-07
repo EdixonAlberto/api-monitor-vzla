@@ -5,6 +5,7 @@ class SourceData {
   readonly id: string
   readonly name: string
   readonly logo: string
+  readonly banner: string
   readonly urlPublic: string
   readonly type: 'fiat' | 'crypto'
   readonly country: string
@@ -27,6 +28,7 @@ export class PriceDto {
       id: sourceData._id.toString(),
       name: sourceData.name,
       logo: sourceData.logo,
+      banner: sourceData.banner,
       urlPublic: sourceData.urlPublic,
       type: sourceData.type,
       country: sourceData.country,
