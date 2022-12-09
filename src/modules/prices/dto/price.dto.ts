@@ -6,7 +6,10 @@ class SourceData {
   readonly name: string
   readonly logo: string
   readonly banner: string
-  readonly urlPublic: string
+  readonly link: {
+    label: string
+    url: string
+  }
   readonly type: 'fiat' | 'crypto'
   readonly country: string
   readonly symbol: string
@@ -29,7 +32,7 @@ export class PriceDto {
       name: sourceData.name,
       logo: sourceData.logo,
       banner: sourceData.banner,
-      urlPublic: sourceData.urlPublic,
+      link: sourceData.link,
       type: sourceData.type,
       country: sourceData.country,
       symbol: sourceData.symbol,

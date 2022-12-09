@@ -23,7 +23,10 @@ export class Source {
   readonly banner: string
 
   @prop({ required: true })
-  readonly urlPublic: string
+  readonly link: {
+    label: string
+    url: string
+  }
 
   @prop({ required: true })
   readonly urlList: string[]
