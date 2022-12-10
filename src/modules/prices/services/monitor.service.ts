@@ -6,7 +6,6 @@ import { StateModel, State } from '@MODULES/prices/entities/state.model'
 @Injectable()
 export class MonitorService {
   private readonly TIME_INTERVAL: number = 1000 * 60 * 1
-  private readonly UPDATE_HOURS: string[] = ['09:32', '13:32']
   private interval: NodeJS.Timer
   private logger: Logger
 
@@ -28,8 +27,6 @@ export class MonitorService {
 
   public async run(callback: () => Promise<void>): Promise<void> {
     try {
-      await this.loadUpdateHours()
-
       await new Promise((resolve, reject) => {
         this.logger.log(`Monitor running`)
 
@@ -37,7 +34,7 @@ export class MonitorService {
           const currentTime = this.getVzlaTime()
 
           try {
-            const { _id, updateHours, resetDate } = await StateModel.findOne({ scope: 'API' })
+            const { _id, updateHours, resetDate } = await StateModel.findOne()
 
             if (this.someUpdateWithoutExecute(updateHours)) {
               for (let i = 0; i < updateHours.length; i++) {
@@ -62,7 +59,7 @@ export class MonitorService {
                 }
               }
             } else if (currentTime >= new Date(resetDate).getTime()) {
-              await this.loadUpdateHours(true)
+              await this.resetHours()
             }
 
             resolve(true)
@@ -78,18 +75,16 @@ export class MonitorService {
     }
   }
 
-  public async loadUpdateHours(isReset: boolean = false): Promise<void> {
-    const { _id, updateHours } = (await StateModel.findOne({ scope: 'API' })) || {}
+  public async resetHours(): Promise<void> {
+    const { _id, updateHours } = (await StateModel.findOne()) || {}
 
-    if (!updateHours?.length || isReset) {
+    if (updateHours?.length) {
       const data: State = {
-        scope: 'API',
-        updateHours: this.UPDATE_HOURS.map(hour => ({ hour, executed: false })),
+        updateHours: updateHours.map(({ hour }) => ({ hour, executed: false })),
         resetDate: this.getResetDate()
       }
 
-      if (isReset) await StateModel.findByIdAndUpdate(_id, data)
-      else await new StateModel(data).save()
+      await StateModel.findByIdAndUpdate(_id, data)
     }
   }
 

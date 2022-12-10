@@ -10,9 +10,6 @@ export class State {
   readonly _id?: mongoose.Types.ObjectId
 
   @prop({ required: true })
-  readonly scope: 'API' | 'SERVICE'
-
-  @prop({ required: true })
   readonly updateHours: Array<{
     hour: string
     executed: boolean
