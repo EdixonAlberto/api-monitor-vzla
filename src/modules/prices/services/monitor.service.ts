@@ -27,39 +27,42 @@ export class MonitorService {
 
   public async run(callback: () => Promise<void>): Promise<void> {
     try {
-      await new Promise((resolve, reject) => {
+      await new Promise(async (resolve, reject) => {
         this.logger.log(`Monitor running`)
 
         this.interval = setInterval(async () => {
-          const currentTime = this.getVzlaTime()
-
           try {
-            const { _id, updateHours, resetDate } = await StateModel.findOne()
+            if (!this.isWeekend()) {
+              const currentTime = this.getVzlaCurrentTime()
+              // Se obtienen los datos cada vez para poder modificarlo desde la DB y ver los resultados
+              // en tiempo real sin tener que desplegar de nuevo el servicio
+              const { _id, updateHours, resetDate } = await StateModel.findOne()
 
-            if (this.someUpdateWithoutExecute(updateHours)) {
-              for (let i = 0; i < updateHours.length; i++) {
-                const { hour, executed } = updateHours[i]
+              if (this.someUpdateWithoutExecute(updateHours)) {
+                for (let i = 0; i < updateHours.length; i++) {
+                  const { hour, executed } = updateHours[i]
 
-                if (!executed) {
-                  // Obtener la fecha actual a partir del tiempo de Vzla para formatear las horas de actualización
-                  const partialDate = new Date(currentTime).toISOString().split('T')[0]
-                  const updateTime = new Date(`${partialDate}T${hour}:00.000Z`).getTime()
+                  if (!executed) {
+                    // Obtener la fecha actual a partir del tiempo de Vzla para formatear las horas de actualización
+                    const partialDate = new Date(currentTime).toISOString().split('T')[0]
+                    const updateTime = new Date(`${partialDate}T${hour}:00.000Z`).getTime()
 
-                  if (currentTime >= updateTime) {
-                    // Recordar que se ejecutó el callback en esta fecha
-                    updateHours.forEach(updateHour => {
-                      if (updateHour.hour === hour) updateHour.executed = true
-                    })
-                    await StateModel.findByIdAndUpdate(_id, { updateHours })
+                    if (currentTime >= updateTime) {
+                      // Recordar que se ejecutó el callback en esta fecha
+                      updateHours.forEach(updateHour => {
+                        if (updateHour.hour === hour) updateHour.executed = true
+                      })
+                      await StateModel.findByIdAndUpdate(_id, { updateHours })
 
-                    await callback()
-                    this.logger.log(`Monitor updated: ${new Date(updateTime).toISOString()}`)
-                    break
+                      await callback()
+                      this.logger.log(`Monitor updated: ${new Date(updateTime).toISOString()}`)
+                      break
+                    }
                   }
                 }
+              } else if (currentTime >= new Date(resetDate).getTime()) {
+                await this.resetHours()
               }
-            } else if (currentTime >= new Date(resetDate).getTime()) {
-              await this.resetHours()
             }
 
             resolve(true)
@@ -88,7 +91,7 @@ export class MonitorService {
     }
   }
 
-  private getVzlaTime(): number {
+  private getVzlaCurrentTime(): number {
     const time = new Date().getTime()
     // restar 4 hrs para adecuar el timezone a Venezuela
     return time - 14400000
@@ -104,7 +107,12 @@ export class MonitorService {
     return new Date(resetTime)
   }
 
-  private someUpdateWithoutExecute(updateHours: any[]): boolean {
+  private someUpdateWithoutExecute(updateHours: State['updateHours']): boolean {
     return updateHours.some(({ executed }) => !executed)
+  }
+
+  private isWeekend(): boolean {
+    const vzlaDate = new Date(this.getVzlaCurrentTime())
+    return vzlaDate.getDay() === 6 || vzlaDate.getDay() === 0
   }
 }
