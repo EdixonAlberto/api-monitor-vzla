@@ -18,7 +18,7 @@ import { MonitorService } from '@MODULES/prices/services/monitor.service'
 @WebSocketGateway()
 export class PriceGateway implements OnGatewayConnection, OnGatewayDisconnect {
   @WebSocketServer()
-  private server: Socket
+  public server: Socket
   private logger: (message: string | object) => void
   private clients: TClient = new Map()
 
@@ -61,8 +61,8 @@ export class PriceGateway implements OnGatewayConnection, OnGatewayDisconnect {
   private emitPrices(): void {
     this.monitorService.run(async () => {
       try {
-        const { data } = await firstValueFrom(
-          this.http.get<TServiceResponse>('/api/update_data').pipe(
+        const { data } = await firstValueFrom<{ data: TServiceResponse }>(
+          this.http.get<TServiceResponse>('/api/update_data/sources/all').pipe(
             catchError(error => {
               const errorMessage = error?.response?.data.error || error.message
               throw new Error(`Error request: ${errorMessage}`)
@@ -72,6 +72,7 @@ export class PriceGateway implements OnGatewayConnection, OnGatewayDisconnect {
 
         // TODO: Por ahora mostrar esto aqui, luego se debe guardar todo logger en DB
         console.log(data.response)
+        const sourceNameList = data.response.filter(({ updated }) => updated).map(({ name }) => name)
 
         await Promise.allSettled(
           this.getTotalChannels().map(async ({ query, event }) => {
@@ -79,7 +80,7 @@ export class PriceGateway implements OnGatewayConnection, OnGatewayDisconnect {
               const { qty, source } = query
               const data = source
                 ? await this.pricesService.findPricesBySource(qty, source)
-                : await this.pricesService.findPrices(qty)
+                : await this.pricesService.findPrices(qty, sourceNameList)
 
               this.server.emit(event, {
                 response: `Prices of ${source || 'all'}`,

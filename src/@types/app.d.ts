@@ -29,9 +29,9 @@ type TChannel = {
 }
 
 type TServiceResponse = {
-  response: {
+  response: Array<{
     name: string
     updated: boolean
-  } | null
+  }> | null
   error: string | null
 }

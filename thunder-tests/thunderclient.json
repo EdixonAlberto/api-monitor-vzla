@@ -23,25 +23,49 @@
     "colId": "6694f809-b015-44f1-ad39-04c334165103",
     "containerId": "",
     "name": "get prices all",
-    "url": "{{HOST}}/api/prices/last",
+    "url": "{{HOST}}/api/prices/{qty}",
     "method": "GET",
-    "sortNum": 20000,
+    "sortNum": 5000,
     "created": "2022-11-15T17:33:39.512Z",
-    "modified": "2022-11-15T17:33:59.681Z",
+    "modified": "2022-12-20T04:48:01.012Z",
     "headers": [],
-    "params": [],
+    "params": [
+      {
+        "name": "qty",
+        "value": "last",
+        "isPath": true
+      }
+    ],
+    "body": {
+      "type": "json",
+      "raw": "[\n  \"enparalelo\",\n  \"bcv\"\n]",
+      "form": []
+    },
     "tests": []
   },
   {
-    "_id": "5893482c-0c89-463e-9046-cc2b88659084",
+    "_id": "5c8e5fc8-60ca-4f84-9b0f-149e0233453d",
     "colId": "6694f809-b015-44f1-ad39-04c334165103",
     "containerId": "",
-    "name": "update data",
-    "url": "",
+    "name": "emit prices by sources",
+    "url": "{{HOST}}/api/prices/emit/sources/{source}",
     "method": "GET",
     "sortNum": 30000,
-    "created": "2022-12-05T14:37:01.933Z",
-    "modified": "2022-12-05T14:37:01.942Z",
-    "headers": []
+    "created": "2022-12-19T21:34:04.687Z",
+    "modified": "2022-12-19T22:33:00.651Z",
+    "headers": [
+      {
+        "name": "Origin",
+        "value": "http://localhost:3000"
+      }
+    ],
+    "params": [
+      {
+        "name": "source",
+        "value": "enparalelo",
+        "isPath": true
+      }
+    ],
+    "tests": []
   }
 ]

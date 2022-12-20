@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common'
+
 import { PriceDto } from '@MODULES/prices/dto'
 import { Price, PriceModel } from '@MODULES/prices/entities/price.model'
-import { SourceModel } from '@SRC/modules/prices/entities/source.model'
 
 @Injectable()
 export class PricesService {
@@ -23,13 +23,11 @@ export class PricesService {
     return prices.map(price => new PriceDto(price))
   }
 
-  public async findPrices(qty: TQty) {
-    const sources = await SourceModel.find()
-    const sourceNameList = sources.map(source => source.key.toLowerCase())
+  public async findPrices(qty: TQty, sourceList: string[]) {
     let queryPromiseList: Array<Promise<Price[]>> = []
     let pricesList: Array<Price[]> = []
 
-    for (const sourceName of sourceNameList) {
+    for (const sourceName of sourceList) {
       queryPromiseList.push(
         PriceModel(sourceName).find().populate('sourceId', { key: 0, urlList: 0 }) as unknown as Promise<Price[]>
       )
@@ -45,6 +43,8 @@ export class PricesService {
     }
     if (!pricesList.length) return []
 
+    // TODO: Cambiar esta parte del codigo para retornar un array de array de precios
+    // y el flat dejarlo para cuando "qty" se "last"
     const prices = pricesList.flat()
     return prices.map(price => new PriceDto(price))
   }
